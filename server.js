@@ -4,13 +4,17 @@ const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
+const POXEDEX = require('/pokedex.json');
 
 app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
+app.use(validateBearerToken); // use validation handler for ALL endpoints 
 
 const API_TOKEN = process.env.API_TOKEN;
 const PORT = 8000;
+// Valid types of pokemon
+const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
 
 /**
  * validateBearerToken
@@ -36,9 +40,6 @@ const validateBearerToken = (req, res, next)  => {
     next();
 }
 
-// Valid types of pokemon
-const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
-
 /**
  * handleTypes
  * returns a response with valid Pokemon types
@@ -52,13 +53,22 @@ const handleTypes = (req, res) => {
  * handlePokemon
  */
 const handlePokemon = (req,res) => {
+    // Get query parameters
     const {name, type} = req.query;
+
+    // Validate query params
+
+
+    // Perform logic & construct response
+
+    // Send response
     return res.status(200).send('Request successful! Endpoint is still under development')
 }
 
-// 🚧 use validation handler for ALL endpoints 🚧
-app.use(validateBearerToken);
-
+/**
+ * Endpoint: /
+ * directs client to useful endpoints
+ */
 app.get('/', (req, res) => {
     return res
         .status(200)
