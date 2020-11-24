@@ -52,20 +52,34 @@ const handleTypes = (req, res) => {
  * handlePokemon
  */
 const handlePokemon = (req,res) => {
+    // initialize response object
+    let response = POXEDEX.pokemon;
     // Get query parameters
-    const {name, type} = req.query;
+    let {name, type} = req.query;
 
     // Validate query params
-    //if type key exists without a value
+    // check if type key exists without a value
     if(type === ''){
         res.status(400).send(`'type' must have a value if included`)
     }
-
-
+    // check if type is one of the valid options
+    if(type && !validTypes.includes(type)){
+        res.status(400).send(`'type' value must match one of the valid types. See valid types at the endpoint /types`)
+    }
+    // check if name key exists without a value
+    if(name === ''){
+        res.status(400).send(`'name' must have a value if included`)
+    }
     // Perform logic & construct response
+    if(type){
+        response = response.filter(pokemon => pokemon.type.includes(type))
+    }
+    if(name){
+        response = response.filter(pokemon => pokemon.name.toLowerCase().includes(name.toLowerCase()))
+    }
 
     // Send response
-    return res.status(200).send('Request successful! Endpoint is still under development')
+    return res.json(response)
 }
 
 app.use(validateBearerToken); // use validation handler for ALL endpoints 
