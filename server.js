@@ -5,7 +5,7 @@ const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
 
-app.use(morgan('common'));
+app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
 
@@ -17,7 +17,11 @@ const PORT = 8000;
  * 
  */
 const validateBearerToken = (req, res, next)  => {
-    const authVal = req.get('Authorization' || '')
+    const authVal = req.get('Authorization')
+
+    if(!authVal){
+        return res.status(400).json({error: 'Unauthorized request'});
+    }
 
     if (!authVal.startsWith('Bearer ')){
         return res.status(400).send('Must include Bearer token')
@@ -44,8 +48,16 @@ const handleTypes = (req, res) => {
 }
 
 
+/**
+ * handlePokemon
+ */
+const handlePokemon = (req,res) => {
+    const {name, type} = req.query;
+    return res.status(200).send('Request successful! Endpoint is still under development')
+}
+
 // 🚧 use validation handler for ALL endpoints 🚧
-// app.use(validateBearerToken);
+app.use(validateBearerToken);
 
 app.get('/', (req, res) => {
     return res
@@ -67,10 +79,7 @@ app.get('/types', handleTypes);
  * w/o query options: Returns an array of full pokedex entries
  *
  */
-app.get('/pokemon', (req, res) => {
-    const {name, type} = req.query;
-    return res.status(200).send('Request successful! Endpoint is still under development')
-})
+app.get('/pokemon', handlePokemon)
 
 
 // run that server, doge 🐕
