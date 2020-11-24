@@ -4,12 +4,11 @@ const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
-const POXEDEX = require('/pokedex.json');
+const POXEDEX = require('./pokedex.json');
 
 app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
-app.use(validateBearerToken); // use validation handler for ALL endpoints 
 
 const API_TOKEN = process.env.API_TOKEN;
 const PORT = 8000;
@@ -57,6 +56,10 @@ const handlePokemon = (req,res) => {
     const {name, type} = req.query;
 
     // Validate query params
+    //if type key exists without a value
+    if(type === ''){
+        res.status(400).send(`'type' must have a value if included`)
+    }
 
 
     // Perform logic & construct response
@@ -64,6 +67,8 @@ const handlePokemon = (req,res) => {
     // Send response
     return res.status(200).send('Request successful! Endpoint is still under development')
 }
+
+app.use(validateBearerToken); // use validation handler for ALL endpoints 
 
 /**
  * Endpoint: /
