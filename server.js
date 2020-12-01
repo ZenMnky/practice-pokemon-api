@@ -25,7 +25,7 @@ app.use((error, req, res, next) => {
 })
 
 const API_TOKEN = process.env.API_TOKEN;
-const PORT = process.evn.PORT || 8000;
+const PORT = process.env.PORT || 8000;
 // Valid types of pokemon
 const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
 
