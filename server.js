@@ -6,12 +6,26 @@ const cors = require('cors');
 const helmet = require('helmet');
 const POXEDEX = require('./pokedex.json');
 
-app.use(morgan('dev'));
+const morganSetting = process.env.NODE_ENV === 'production'
+    ? 'tiny'
+    : 'common'
+
+app.use(morgan(morganSetting));
 app.use(cors());
 app.use(helmet());
+// 4 parameters in middleware, express knows to treat this as error handler
+app.use((error, req, res, next) => {
+    let response;
+    if (process.env.NODE_ENV === 'production'){
+        response = { error: { message: 'server error' }}
+    } else {
+        response = { error }
+    }
+    res.status(500).json(response)
+})
 
 const API_TOKEN = process.env.API_TOKEN;
-const PORT = 8000;
+const PORT = process.evn.PORT || 8000;
 // Valid types of pokemon
 const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
 
@@ -113,5 +127,5 @@ app.get('/pokemon', handlePokemon)
 
 // run that server, doge 🐕
 app.listen(PORT, () => {
-    console.log(`Server started at http://localhost:${PORT}`)
+    console.log(`Server started at port: ${PORT}`)
 })
